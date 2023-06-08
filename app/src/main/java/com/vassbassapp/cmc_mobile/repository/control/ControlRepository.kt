@@ -1,6 +1,11 @@
 package com.vassbassapp.cmc_mobile.repository.control
 
-import java.sql.Connection
+import com.vassbassapp.cmc_mobile.model.Control
 
-public interface ControlRepository {
+interface ControlRepository {
+    fun getByLocalId(id : Int) : Control?
+    fun getAll() : List<Control>
+    fun add(control : Control)
+    fun deleteByLocalId(id : Int)
+    fun set(localId : Int, control : Control)
 }

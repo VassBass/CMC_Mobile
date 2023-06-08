@@ -2,6 +2,6 @@ package com.vassbassapp.cmc_mobile.repository
 
 import java.sql.Connection
 
-public interface ConnectionHolder {
+interface DBHelper {
     fun getConnection() : Connection
 }
