@@ -1,6 +1,7 @@
 package com.vassbassapp.cmc_mobile.repository.control
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.vassbassapp.cmc_mobile.model.Control
@@ -41,38 +42,86 @@ class LocalSqliteControlRepository(context: Context, factory: SQLiteDatabase.Cur
         val db = this.readableDatabase
         val cursor = db.rawQuery(sql, null)
 
+        var result: Control? = null
         if (cursor.moveToFirst()) {
-            val serverIdIndex = cursor.getColumnIndex(SERVER_ID_COL)
-            val nameIndex = cursor.getColumnIndex(NAME_COL)
-            val dateIndex = cursor.getColumnIndex(DATE_COL)
-
-            if (serverIdIndex >= 0 && nameIndex >= 0 && dateIndex >= 0) {
-                val serverId = cursor.getString(serverIdIndex)!!.toInt()
-                val name = cursor.getString(nameIndex)
-                val date = cursor.getString(dateIndex)
-
-                cursor.close()
-                return Control(id, serverId, name, date)
-            }
+            result = getControlFromCursor(cursor)
         }
 
         cursor.close()
-        return null
+        return result
     }
 
-    override fun getAll(): List<Control> {
-        TODO("Not yet implemented")
+    override fun getAll(): List<Control?> {
+        val result = mutableListOf<Control?>()
+        val sql = "SELECT * FROM $TABLE_NAME"
+
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(sql, null)
+
+        while (cursor.moveToNext()) {
+            result.add(getControlFromCursor(cursor))
+        }
+
+        cursor.close()
+        return result
+    }
+
+    private fun getControlFromCursor(cursor: Cursor) : Control? {
+        val localIdIndex = cursor.getColumnIndex(LOCAL_ID_COL)
+        val serverIdIndex = cursor.getColumnIndex(SERVER_ID_COL)
+        val nameIndex = cursor.getColumnIndex(NAME_COL)
+        val dateIndex = cursor.getColumnIndex(DATE_COL)
+
+        return if (localIdIndex >= 0 && serverIdIndex >= 0 && nameIndex >= 0 && dateIndex >= 0) {
+            val localId = cursor.getString(localIdIndex)!!.toInt()
+            val serverId = cursor.getString(serverIdIndex)!!.toInt()
+            val name = cursor.getString(nameIndex)
+            val date = cursor.getString(dateIndex)
+
+            cursor.close()
+            Control(localId, serverId, name, date)
+        } else null
     }
 
     override fun add(control: Control) {
-        TODO("Not yet implemented")
+        val sql = "INSERT INTO $TABLE_NAME ($NAME_COL, $DATE_COL) " +
+                "VALUES (${control.name}, ${control.date})"
+
+        val db = this.writableDatabase
+        db.execSQL(sql)
     }
 
     override fun deleteByLocalId(id: Int) {
-        TODO("Not yet implemented")
+        val sql = "DELETE FROM $TABLE_NAME WHERE $LOCAL_ID_COL = $id"
+
+        val db = this.writableDatabase
+        db.execSQL(sql)
     }
 
     override fun set(localId: Int, control: Control) {
-        TODO("Not yet implemented")
+        val sql = "UPDATE $TABLE_NAME " +
+                "SET $SERVER_ID_COL = ${control.serverId}, " +
+                "$NAME_COL = ${control.name}, " +
+                "$DATE_COL = ${control.date} " +
+                "WHERE $LOCAL_ID_COL = $localId"
+
+        val db = this.writableDatabase
+        db.execSQL(sql)
+    }
+
+    override fun setServerId(localId: Int, serverId: Int) {
+        val sql = "UPDATE $TABLE_NAME " +
+                "SET $SERVER_ID_COL = $serverId " +
+                "WHERE $LOCAL_ID_COL = $localId"
+
+        val db = this.writableDatabase
+        db.execSQL(sql)
+    }
+
+    override fun clear() {
+        val sql = "DELETE FROM $TABLE_NAME"
+
+        val db = this.writableDatabase
+        db.execSQL(sql)
     }
 }
