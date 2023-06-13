@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CMC_Mobile</string>
+    <string name="name">Назва</string>
+    <string name="add">Додати</string>
 </resources>

@@ -1,43 +1,49 @@
 package com.vassbassapp.cmc_mobile
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.vassbassapp.cmc_mobile.ui.theme.CMC_MobileTheme
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.Button
+import android.view.View.OnClickListener
+
+class MainActivity : AppCompatActivity() {
+
+    private val repository : ControlRepository = LocalSqliteControlRepository(this, null)
+    private val list = mutableListOf<String>()
+    private val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list)
+
+    private val controlName : EditText = findViewById(R.id.controlName)
+    private val controlList : ListView = findViewById(R.id.controlList)
+    private val btnAdd : Button = findViewById(R.id.btnAdd)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            CMC_MobileTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
-                }
+        setContentView(R.layout.activity_main)
+
+        controlList.setAdapter(adapter)
+
+        btnAdd.setOnClickListener(addBtnClickListener)
+        refreshControlList()
+    }
+
+    fun refreshControlList() {
+        list.clear()
+        list.addAll(repository.getAll().map { it.toString() } )
+        adapter.notifyDataSetChanged()
+    }
+
+    val addBtnClickListener = object : OnClickListener() {
+        override fun onClick(v: View!) {
+            val name = controlName.getText().toString()
+            if (name.isNotBlank()) {
+                val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+                Control control = Control(null, null, name, date)
+                repository.add(control)
+                refreshControlList()
+                controlName.setText("")
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-            text = "Hello $name!",
-            modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CMC_MobileTheme {
-        Greeting("Android")
     }
 }
