@@ -85,7 +85,7 @@ class LocalSqliteControlRepository(context: Context, factory: SQLiteDatabase.Cur
 
     override fun add(control: Control) {
         val sql = "INSERT INTO $TABLE_NAME ($NAME_COL, $DATE_COL) " +
-                "VALUES (${control.name}, ${control.date})"
+                "VALUES ('${control.name}', '${control.date}')"
 
         val db = this.writableDatabase
         db.execSQL(sql)
@@ -101,8 +101,8 @@ class LocalSqliteControlRepository(context: Context, factory: SQLiteDatabase.Cur
     override fun set(localId: Int, control: Control) {
         val sql = "UPDATE $TABLE_NAME " +
                 "SET $SERVER_ID_COL = ${control.serverId}, " +
-                "$NAME_COL = ${control.name}, " +
-                "$DATE_COL = ${control.date} " +
+                "$NAME_COL = '${control.name}', " +
+                "$DATE_COL = '${control.date}' " +
                 "WHERE $LOCAL_ID_COL = $localId"
 
         val db = this.writableDatabase
