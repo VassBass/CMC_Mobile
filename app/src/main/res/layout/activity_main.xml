@@ -3,16 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <EditText
-        android:id="@+id/controlName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/name"
-        android:inputType="text"
-        android:autofillHints=""
-        tools:ignore="VisualLintTextFieldSize" />
+    android:orientation="vertical" >
     
     <ListView
         android:id="@+id/controlList"
@@ -21,12 +12,28 @@
         android:layout_weight="1"
         android:gravity="top" />
 
-    <Button
-        android:id="@+id/btnAdd"
-        android:layout_width="100dp"
+    <LinearLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/add"
-    />
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/controlName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name"
+            android:inputType="text"
+            android:autofillHints=""
+            android:lauout_weight="1"
+            tools:ignore="VisualLintTextFieldSize" />
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/add" />
+    </LinearLayout>
     
 </LinearLayout>
