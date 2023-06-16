@@ -8,9 +8,11 @@ import com.vassbassapp.cmc_mobile.model.Control
 import com.vassbassapp.cmc_mobile.repository.DBConfig.Companion.DB_NAME
 import com.vassbassapp.cmc_mobile.repository.DBConfig.Companion.DB_VERSION
 
-class LocalSqliteControlRepository(context: Context, factory: SQLiteDatabase.CursorFactory?) :
+class LocalSqliteControlRepository(context: Context) :
     ControlRepository,
-    SQLiteOpenHelper(context, DB_NAME, factory, DB_VERSION) {
+    SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+
+
 
     companion object {
         private const val TABLE_NAME = "controls"
@@ -74,11 +76,10 @@ class LocalSqliteControlRepository(context: Context, factory: SQLiteDatabase.Cur
 
         return if (localIdIndex >= 0 && serverIdIndex >= 0 && nameIndex >= 0 && dateIndex >= 0) {
             val localId = cursor.getString(localIdIndex)!!.toInt()
-            val serverId = cursor.getString(serverIdIndex)!!.toInt()
+            val serverId = cursor.getString(serverIdIndex)?.toInt()
             val name = cursor.getString(nameIndex)
             val date = cursor.getString(dateIndex)
 
-            cursor.close()
             Control(localId, serverId, name, date)
         } else null
     }

@@ -2,10 +2,12 @@ package com.vassbassapp.cmc_mobile
 
 import android.os.Bundle
 import android.view.View.OnClickListener
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.vassbassapp.cmc_mobile.model.Control
 import com.vassbassapp.cmc_mobile.repository.control.ControlRepository
@@ -26,9 +28,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        repository = LocalSqliteControlRepository(this, null)
+        repository = LocalSqliteControlRepository(this)
 
-        controlName = findViewById(R.id.controlName)
+        controlName = findViewById<View>(R.id.controlName) as EditText
         controlList = findViewById(R.id.controlList)
         btnAdd = findViewById(R.id.btnAdd)
 
@@ -47,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     private val addBtnClickListener = OnClickListener {
         val name = controlName.text.toString()
+        Toast.makeText(this, name, Toast.LENGTH_LONG).show()
         if (name.isNotBlank()) {
             val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
             val control = Control(null, null, name, date)
