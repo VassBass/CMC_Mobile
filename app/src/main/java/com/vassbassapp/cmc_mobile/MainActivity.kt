@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         controlList.adapter = adapter
 
         btnAdd.setOnClickListener(addBtnClickListener)
-        controlList.setOnItemClickListener{ parent, view, position, id ->
+        controlList.setOnItemClickListener{ _, view, _, _ ->
             val item = view as TextView
             Toast.makeText(applicationContext, item.text, Toast.LENGTH_LONG).show()
         }
