@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.vassbassapp.cmc_mobile.model.Control
@@ -33,10 +34,15 @@ class MainActivity : AppCompatActivity() {
         controlList = findViewById(R.id.controlList)
         btnAdd = findViewById(R.id.btnAdd)
 
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        adapter = ArrayAdapter(this, R.layout.list_item, list)
         controlList.adapter = adapter
 
         btnAdd.setOnClickListener(addBtnClickListener)
+        controlList.setOnItemClickListener{ parent, view, position, id ->
+            val item = view as TextView
+            Toast.makeText(applicationContext, item.text, Toast.LENGTH_LONG).show()
+        }
+
         refreshControlList()
     }
 
